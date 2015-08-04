@@ -60,8 +60,12 @@ def main(params):
     try:
         with open(nodes_fn, 'r', encoding=('UTF-8')) as nodedb_handle:
             nodedb = json.load(nodedb_handle)
-    except IOError:
-        nodedb = {'nodes': []}
+    except (IOError,ValueError):
+        nodedb = {'nodes': dict()}
+
+    # flush nodedb if it uses the old format
+    if 'links' in nodedb:
+        nodedb = {'nodes': dict()}
 
     # set version we're going to output
     nodedb['version'] = NODES_VERSION
